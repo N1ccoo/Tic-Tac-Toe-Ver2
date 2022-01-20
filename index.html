@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+    <title>Nicco</title>
+</head>
+<body>
+
+    <nav id="nav-bar">
+        <ul>
+            <li class="Title">NICCO</li>
+           <div class="button-container">
+            <li><button class="nav-button" id="computer-mode">COMPUTER</button></li>
+            <li><button class="nav-button" id="two-player-mode">2 - PLAYER</button></li>
+            <li><button class="nav-button" id="settings-button">SETTINGS</button></li>
+          </div>
+        </ul>
+      </nav>
+
+    <div class="grid-container">
+        <div id="game-grid">
+            <div class="game-square" id="0"></div>
+            <div class="game-square" id="1"></div>
+            <div class="game-square" id="2"></div>
+            <div class="game-square" id="3"></div>
+            <div class="game-square" id="4"></div>
+            <div class="game-square" id="5"></div>
+            <div class="game-square" id="6"></div>
+            <div class="game-square" id="7"></div>
+            <div class="game-square" id="8"></div>
+        </div>
+    </div>
+
+
+    <div id="popup-form" class="">
+        <form id="settings-form">
+            <div>
+                <label for="user-one-name">Player 1 Name :</label>
+                <input type="text" id="user-one-name" required maxlength="25">
+            </div>
+            <div>
+                <label for="user-two-name">Player 2 Name :</label>
+                <input type="text" id="user-two-name" required maxlength="25">
+            </div>
+            <div>
+                <label for="user-one-mark">Player 1 Mark :</label>
+                <input type="text" id="user-one-mark" required maxlength="1" placeholder="X" class="one-char">
+                <label for="user-two-mark">Player 2 Mark :</label>
+                <input type="text" id="user-two-mark" required maxlength="1" placeholder="O" class="one-char">
+            </div>
+            <div>
+                <button type="reset">Reset</button>
+                <button id="user-turn-button" value="userOneFirst">Player 1 First</button>
+                <button type="submit" id="form-submit-button">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="footer">FIn</div>
+
+</body>
+</html>

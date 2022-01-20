@@ -1,0 +1,195 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    gap: 2rem;
+    background-color: black;
+}
+
+#game-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    width: 100%;
+    height: 100%;
+    gap: 1rem;
+}
+
+.grid-container {
+    width: 1000px;
+    height: 1000px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-self: center;
+}
+
+.game-square {
+    background-color: rgba(65, 105, 225, 0.199);
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 5rem;
+}
+
+.nav-button {
+    background-color: inherit;
+    padding: 0.7rem 1rem;
+    border-radius: 6px;
+    border: none;
+    outline: 1px solid rgb(133, 131, 131);
+    color: white;
+    
+}
+
+#nav-bar {
+    font-size: 2rem;
+    padding: 0.8rem 1rem;
+    background-color: black;
+    color: whitesmoke;
+    align-items: center;
+    border-bottom: 1px solid rgb(133, 131, 131);
+}
+
+.Title {
+    letter-spacing: 10px;
+    font-size: 3rem;
+    color: white;
+}
+
+#nav-bar ul {
+    text-decoration: none;
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+}
+
+.button-container {
+    display: flex;
+    gap: 1rem;
+}
+
+#footer {
+    margin-top: auto;
+    display: flex;
+    background-color: black;
+    color: whitesmoke;
+    padding: 0.5rem 1rem;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    min-height: 2.5rem;
+}
+
+#popup-form {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 500px;
+    height: 300px;
+    background-color: rgb(255, 249, 249);
+    z-index: 100;
+    border-radius: 6px;
+    transform: translate(-50%,-50%) scale(0);
+    box-shadow: 0 2rem 5rem 0 #000;
+}
+
+#settings-form {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    gap: 2rem;
+    color: rgb(32, 32, 32);
+}
+
+#settings-form div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1rem;
+}
+
+
+#settings-form input {
+    font-size: 1rem;
+    width: 270px;
+    padding: 0.3rem;
+    border-radius: 6px;
+    border: 1px solid black;
+
+}
+
+#settings-form .one-char {
+    width: 24px;
+}
+
+#settings-form button {
+    background-color: inherit;
+    padding: 0.7rem 1rem;
+    border-radius: 6px;
+    border: none;
+    outline: 1px solid rgb(27, 27, 27);
+    color: rgb(27, 26, 26);
+    width: 130px;
+}
+
+#popup-form.open {
+    animation: open 0.5s forwards;
+    background-color: rgb(255, 249, 249);
+    z-index: 100;
+}
+
+#popup-form.close {
+    animation: close 0.5s forwards;
+    background-color: rgb(255, 249, 249);
+    z-index: 100;
+}
+
+@keyframes close {
+    0% {
+        transform: translate(-50%,-50%) scale(1);
+        z-index: 100;
+    }
+    100% {
+        transform: translate(-50%,-50%) scale(0);
+        z-index: 100;
+    }
+}
+
+@keyframes open {
+    0% {
+        transform: translate(-50%,-50%) scale(0);
+        z-index: 100;
+    }
+    
+    100% {
+        transform: translate(-50%,-50%) scale(1);
+        z-index: 100;
+    }
+}
+
+.board-hover {
+    background-color: rgba(65, 105, 225, 0.63);
+    transition: all 0.6s;
+}
+
+.board-highlight {
+    background-color: rgb(65, 105, 225);
+}
+
+.button-hover {
+    background-color: #202020;
+    transition: all 0.2s;
+}

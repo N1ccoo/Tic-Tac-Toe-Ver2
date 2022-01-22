@@ -70,7 +70,8 @@ function startGame() {
 function endTurn(e) {
     if (origBoard[e.target.id] !== playerOne.getMark() && origBoard[e.target.id] !== playerTwo.getMark()) {
         turn(e.target.id, playerOne);
-        if (!checkDraw()) {turn(bestSpot(), playerTwo)};
+        // if (!checkDraw()) {turn(bestSpot(), playerTwo)};
+        if (!checkWinner(origBoard, playerOne) && !checkDraw()) turn(bestSpot(), playerTwo);
     };
 };
 
@@ -82,30 +83,18 @@ function turn(gameSquareId, player) {
 };
 
 function checkWinner(board, player) {
-    let plays = board.reduce((a, e, i) => (e === player.getMark()) ? a.concat(i) : a, []);
-    let gameWon = null;
-    winConditions.forEach(checkWinLogic);
+    // refactor this code
 
-    function checkWinLogic(winCon) {
-        let squareOne = board[winCon[0]];
-        let squareTwo = board[winCon[1]];
-        let squareThree = board[winCon[2]];
-        let markOne = playerOne.getMark();
-        let markTwo = playerTwo.getMark();
-
-        let playerOneWin = squareOne === markOne && squareTwo === markOne && squareThree === markOne;
-        let playerTwoWin = squareOne === markTwo && squareTwo === markTwo && squareThree === markTwo;
-
-        if (playerOneWin) {
-            let index = winConditions.indexOf(winCon)
-            gameWon = {index, player: playerOne};
-        } else if (playerTwoWin) {
-            let index = winConditions.indexOf(winCon)
-            gameWon = {index, player: playerTwo};
-        }
-    }
-
-    return gameWon
+    let plays = board.reduce((a, e, i) =>
+		(e === player.getMark()) ? a.concat(i) : a, []);
+	let gameWon = null;
+	for (let [index, win] of winConditions.entries()) {
+		if (win.every(elem => plays.indexOf(elem) > -1)) {
+			gameWon = {index: index, player: player};
+			break;
+		}
+	}
+	return gameWon;
 }
 
 function gameOver(gameWon) {
@@ -120,7 +109,8 @@ function gameOver(gameWon) {
 }
 
 function bestSpot() {
-    return findEmptySquares()[0]
+    return minimax(origBoard, playerTwo).index;
+
 }
 
 // player mark must not
@@ -148,6 +138,59 @@ function declareWinner(player) {
     };
 }   
 
+function minimax(newBoard, player) {
+    let emptySquares = findEmptySquares();
+
+    if (checkWinner(newBoard, playerOne)) {
+        return {score: -10};
+    } else if (checkWinner(newBoard, playerTwo)) {
+        return {score: 10};
+    } else if (emptySquares.length === 0) {
+        return {score: 0};
+    }
+
+    let moves = [];
+    for (let i = 0; i < emptySquares.length; i++) {
+        let move = {};
+        move.index = newBoard[emptySquares[i]];
+        newBoard[emptySquares[i]] = player.getMark();
+   
+        if (player == playerTwo) {
+            let result = minimax(newBoard, playerOne);
+            move.score = result.score;
+        } else {
+            let result = minimax(newBoard, playerTwo);
+            move.score = result.score;
+        }
+
+        newBoard[emptySquares[i]] = move.index;
+
+        moves.push(move);
+    }
+
+    let bestMove;
+
+    if (player === playerTwo) {
+        let bestScore = -10000;
+        for (let i = 0; i < moves.length; i++) {
+            if(moves[i].score > bestScore) {
+                bestScore = moves[i].score;
+				bestMove = i;
+            }
+        }
+    } else {
+        let bestScore = 10000;
+        for (let i = 0; i < moves.length; i++) {
+            if (moves[i].score < bestScore) {
+                bestScore = moves[i].score;
+                bestMove = i;
+            }
+        }
+    }
+
+    return moves[bestMove];
+
+}
 
 
 

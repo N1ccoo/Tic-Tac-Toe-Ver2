@@ -181,14 +181,26 @@ body {
 }
 
 .board-hover {
-    background-color: rgba(65, 105, 225, 0.63);
+    background-color: rgba(65, 105, 225, 0.452);
     transition: all 0.6s;
 }
 
 .board-highlight {
-    background-color: rgb(65, 105, 225);
+    background-color: rgba(65, 105, 225, 0.836);
+    transition: all 0.6s;
 }
 
+
+
+.board-highlight-win {
+    background-color: rgb(68, 160, 235);
+    transition: all 0.6s;
+}
+
+.board-highlight-draw {
+    background-color: rgb(100, 65, 225);
+    transition: all 0.6s;
+}
 
 .button-hover {
     background-color: #202020;

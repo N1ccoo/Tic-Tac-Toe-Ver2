@@ -86,7 +86,7 @@ body {
     display: flex;
     background-color: black;
     color: whitesmoke;
-    padding: 0.5rem 1rem;
+    padding: 1rem;
     justify-content: center;
     align-items: center;
     font-size: 1.5rem;
@@ -182,7 +182,7 @@ body {
 
 .board-hover {
     background-color: rgba(65, 105, 225, 0.452);
-    transition: all 0.6s;
+    transition: all 0.s;
 }
 
 .board-highlight {

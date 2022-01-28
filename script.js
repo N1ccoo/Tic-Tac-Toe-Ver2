@@ -37,7 +37,6 @@
                 playerTwo.setMark('O');
             }
             if (playerOne.getName() === playerTwo.getName()) {
-                console.log(playerTwo.getName() + '2');
                 playerTwo.setName(playerTwo.getName() + '2');
             };
         }
@@ -48,7 +47,7 @@
             playerOne.setMark(playerOneMarkInput.value);
             playerTwo.setName(playerTwoNameInput.value);
             playerTwo.setMark(playerTwoMarkInput.value);
-            setPlayerTurns(playerTurnInput.value);
+            setPlayerFirstTurn(playerTurnInput.value);
             playerOneNameInput.value = '';
             playerTwoNameInput.value = '';
             playerOneMarkInput.value = '';
@@ -56,14 +55,14 @@
             uniqueInput();
         };
 
-        function setPlayerTurns(choice) {
+        function setPlayerFirstTurn(choice) {
             if (choice === 'playerOneFirst') {
-                playerOne.setTurn(true);
-                playerTwo.setTurn(false);
+                playerOne.setFirstTurn(true);
+                playerTwo.setFirstTurn(false);
                 return 'player one first'
             } else if (choice === 'playerTwoFirst') {
-                playerOne.setTurn(false);
-                playerTwo.setTurn(true);
+                playerOne.setFirstTurn(false);
+                playerTwo.setFirstTurn(true);
                 return 'player two first'
             };
         };
@@ -79,7 +78,7 @@
         }
 
         return Object.assign({}, {
-            setPlayerTurns,
+            setPlayerFirstTurn,
             playerTurnInput,
             settingsFormInput
         }, )
@@ -92,7 +91,7 @@
         setMark: (newMark) => {
             return state.mark = newMark
         },
-        setTurn: (turn) => {
+        setFirstTurn: (turn) => {
             return state.firstTurn = turn
         },
         getName: () => {
@@ -103,6 +102,12 @@
         },
         isFirst: () => {
             return state.firstTurn
+        },
+        setTurn: (boolean) => {
+            return state.turn = boolean
+        },
+        getTurn: () => {
+            return state.turn
         }
     });
 
@@ -111,11 +116,14 @@
             name,
             mark,
             firstTurn,
+            turn: null,
         };
 
         return Object.assign({}, playerMethods(state));
     };
 
+
+    
     let gameType;
     let origBoard;
     let playerOne = Player('Player 1', 'X', true);
@@ -123,12 +131,15 @@
     let gameSquare = Array.from(document.getElementsByClassName('game-square'));
     let gameText = document.getElementById('footer');
     gameSettings.settingsFormInput.addEventListener('submit', resetAll);
-
+    gameSettings.playerTurnInput.addEventListener('click',resetAll);
+    
     function resetAll() {
         if (gameType === 'Computer') {
-           computerGame.startComputerGame()
-        }
-    }
+           Game.startComputerGame();
+        } else if (gameType === 'Two Player') {
+            Game.startTwoPlayerGame();
+        };
+    };
 
     let winConditions = [
         [0, 1, 2],
@@ -141,23 +152,22 @@
         [2, 4, 6]
     ];
 
-    const twoPlayerGame = (() => {
+    const Game = (() => {
 
-
-
-    })();
-
-    const computerGame = (() => {
-
+        let twoPlayerGameButton = document.getElementById('two-player-mode');
         let computerGameButton = document.getElementById('computer-mode');
-        computerGameButton.addEventListener('click', startComputerGame)
+        computerGameButton.addEventListener('click', startComputerGame);
+        twoPlayerGameButton.addEventListener('click', startTwoPlayerGame);
+
+        //Computer Game
 
         function startComputerGame() {
             origBoard = Array.from(Array(9).keys());
             gameText.textContent = 'Computer Game';
             gameType = 'Computer';
-            resetGame()
-            if (playerTwo.isFirst()) {
+            resetGame();
+            addEndTurn();
+            if (playerTwo.isFirst() && gameType === 'Computer') {
                 turn(0, playerTwo);
                 gameSquare[0].classList.add('board-highlight');
             };
@@ -165,18 +175,35 @@
 
         function endTurn(e) {
             if (origBoard[e.target.id] !== playerOne.getMark() && origBoard[e.target.id] !== playerTwo.getMark()) {
-                turn(e.target.id, playerOne);
-                if (!checkWinner(origBoard, playerOne) && !checkDraw()) turn(bestSpot(), playerTwo);
+                if (gameType === 'Computer') {
+                     turn(e.target.id, playerOne);
+                    if (!checkWinner(origBoard, playerOne) && !checkDraw()) turn(bestSpot(), playerTwo);
+                } else if (gameType === 'Two Player') {
+                    if (playerOne.getTurn()) {
+                        turn(e.target.id, playerOne);
+                        playerSetTurn(playerTwo);
+                    } else if (playerTwo.getTurn()) {
+                        turn(e.target.id, playerTwo);
+                        playerSetTurn(playerOne);
+                    };
+                };
             };
         };
 
         function turn(gameSquareId, player) {
             origBoard[gameSquareId] = player.getMark();
             document.getElementById(gameSquareId).textContent = player.getMark();
+            
+    
             let gameWon = checkWinner(origBoard, player);
             if (gameWon) {
                 gameOver(gameWon)
             };
+
+            if (gameWon == null) {
+                checkDraw();
+            }
+            
         };
 
         function checkWinner(board, player) {
@@ -198,7 +225,7 @@
             function getPlayedSpots(accumulator, currentValue, index) {
                 if (currentValue === player.getMark()) {
                     accumulator.push(index);
-                }
+                };
                 return accumulator;
             };
         };
@@ -219,9 +246,9 @@
                     gameSquare[i].classList.add('board-highlight-draw');
                 }
                 declareWinner('This_game_is_a_draw.123');
-                return true;
-            }
-            return false;
+                return true
+            };
+            return false
         }
 
         function minimax(newBoard, player) {
@@ -282,13 +309,16 @@
             return moves[bestMove];
         };
 
-        // END GAME
+        // END GAME (computer)
 
         function declareWinner(player) {
+            turnCount = 9 - findEmptySquares().length; 
+
+
             if (player == 'This_game_is_a_draw.123') {
                 gameText.textContent = 'Draw';
             } else {
-                gameText.textContent = `${player} has won the game!`;
+                gameText.textContent = `${player} has won the game in ${turnCount} turns!`;
             };
         };
 
@@ -304,17 +334,51 @@
         }
 
         function resetGame() {
-            gameSettings.setPlayerTurns(gameSettings.playerTurnInput.value);
+            gameSettings.setPlayerFirstTurn(gameSettings.playerTurnInput.value);
             for (let i = 0; i < gameSquare.length; i++) {
                 gameSquare[i].textContent = '';
-                gameSquare[i].addEventListener('click', endTurn);
+                gameSquare[i].removeEventListener('click', endTurn);
                 gameSquare[i].classList.remove('board-highlight');
                 gameSquare[i].classList.remove('board-highlight-win');
                 gameSquare[i].classList.remove('board-highlight-draw');
             };
         }
 
-        return Object.assign({},{startComputerGame})
+        function addEndTurn() {
+            for (let i = 0; i < gameSquare.length; i++) {
+                gameSquare[i].addEventListener('click',endTurn);
+            }
+        }
+
+
+        //Two player Game
+
+        function startTwoPlayerGame() {
+            origBoard = Array.from(Array(9).keys());
+            resetGame();
+            addEndTurn();
+            gameType = 'Two Player';
+            gameText.textContent = '2 Player Game';
+            
+            if (playerOne.isFirst()) {
+                playerSetTurn(playerOne);
+            } else if (playerTwo.isFirst()) {
+                playerSetTurn(playerTwo);
+            };            
+        };
+
+        function playerSetTurn(player) {
+            if(player == playerOne) {
+                playerOne.setTurn(true);
+                playerTwo.setTurn(false);
+            } else if (player == playerTwo) {
+                playerOne.setTurn(false);
+                playerTwo.setTurn(true);
+            };
+        };
+            
+        
+        return Object.assign({},{startComputerGame}, {startTwoPlayerGame})
 
     })();
 
